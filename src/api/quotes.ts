@@ -1,21 +1,87 @@
 import { api } from "./client"
+import type { Quote } from "../types"
 
-interface Tag {
-  id: number;
-  name: string;
-  created_by_id: bigint;
+export type RequestOptions = {
+  signal?: AbortSignal | null 
 }
 
-export interface Quote {
-  id: number;
+type GetSpecificQuoteParams = {
+  id: number
+}
+
+export type CreateNewQuoteParams = {
   body: string;
   attribution: string;
-  created_at: string;
-  user_id: bigint;
-  tags: Tag[]
+}
+
+export type UpdateQuoteParams = {
+  body?: string;
+  attribution?: string;
+  tag_ids?: number[];
+}
+
+export function getQuotes(reqOpts?: RequestOptions){
+  return api<Quote[]>('/api/v1/quotes', {
+    method: 'GET',
+    signal: reqOpts?.signal
+  })
+}
+
+export function getRandomQuote(reqOpts?: RequestOptions){
+  return api<Quote>('/api/v1/quotes/random', {
+    method: 'GET',
+    signal: reqOpts?.signal
+  })
+}
+
+export function getSpecificQuote(
+  params: GetSpecificQuoteParams,
+  reqOpts?: RequestOptions
+){
+  return api<Quote>(`/api/v1/quotes/${params.id}`, {
+    method: 'GET',
+    signal: reqOpts?.signal
+  })
+}
+
+export function createNewQuote(
+  params: CreateNewQuoteParams,
+  // reqOpts?: RequestOptions
+){
+    return api<Quote>(`/api/v1/quotes`, {
+      method: 'POST',
+      body: JSON.stringify({ quote: params }),
+      // signal: reqOpts?.signal
+  })
+}
+
+export function updateQuote(
+  id: number,
+  params: UpdateQuoteParams,
+){
+  return api<Quote>(`/api/v1/quotes/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ quote: params }),
+  })
+}
+
+export function deleteQuote(id: number){
+  return api<void>(`/api/v1/quotes/${id}`, {
+    method: 'DELETE'
+  })
 }
 
 
-export function getQuotes(){
-  return api<Quote[]>('/api/v1/quotes')
-}
+//todo
+
+// delete quote 
+
+// delete all quotes 
+
+//done 
+
+// get specific quote 
+
+// add new quote 
+
+// update quote 

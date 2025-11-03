@@ -1,17 +1,9 @@
-export interface CsrfResponse {
-  csrfToken: string;
-}
-
-export type ApiMethod =
-  | 'GET' | 'HEAD' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS' | 'TRACE';
-
-export interface ApiInit extends RequestInit {
-  method?: ApiMethod;
-}
-
-export type JsonPrimitive = string | number | boolean | null;
-export type Json = JsonPrimitive | Json[] | { [k: string]: Json };
-
+import type { 
+  CsrfResponse, 
+  ApiMethod, 
+  ApiInit, 
+  Json, 
+ } from "../types";
 const API = import.meta.env.VITE_API_URL as string;
 let csrfToken = '';
 
@@ -43,7 +35,7 @@ export async function api<T = Json>(path: string, init: ApiInit = {}): Promise<T
   }
 
   const doFetch = () =>
-    fetch(`${API}${path}`, { ...init, method, headers, credentials: 'include' });
+    fetch(`${API}${path}`, { ...init, method, headers, credentials: 'include', signal: init.signal ?? undefined });
 
   let res = await doFetch();
 

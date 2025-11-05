@@ -3,15 +3,16 @@ import { useFetchCurrentUser } from "../users/hooks/useFetchCurrentUser";
 
 type RequireAuthProps = {
   children: React.ReactNode;
+  fallback?: React.ReactNode;
 };
 
-function RequireAuth({ children }: RequireAuthProps){
+function RequireAuth({ children, fallback }: RequireAuthProps){
 
   const { data: currentUser, isPending } = useFetchCurrentUser();
   const location = useLocation();
 
   if (isPending) {
-    return <p>Loading…</p>;
+    return <>{fallback || null}</>
   }
 
   if (!currentUser) {

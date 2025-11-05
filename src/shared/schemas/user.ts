@@ -19,7 +19,10 @@ export const createUserSchema = baseUserSchema.extend({
     path: ["password_confirmation"] // determines field on which the error gets surfaced
   })
 
-export const loginUserSchema = baseUserSchema.omit({ username: true});
+//remove the password min and regex validations for login
+export const loginUserSchema = baseUserSchema.omit({ username: true}).extend({
+  password: z.string()
+})
 
 
 export const updateUserSchema = z.object({

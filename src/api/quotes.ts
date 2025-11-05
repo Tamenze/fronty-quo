@@ -46,12 +46,10 @@ export function getSpecificQuote(
 
 export function createNewQuote(
   params: CreateNewQuoteParams,
-  // reqOpts?: RequestOptions
 ){
     return api<Quote>(`/api/v1/quotes`, {
       method: 'POST',
       body: JSON.stringify({ quote: params }),
-      // signal: reqOpts?.signal
   })
 }
 

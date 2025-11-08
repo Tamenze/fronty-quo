@@ -7,6 +7,7 @@ function Footer(){
   const play = () => {
     const a = audioRef.current;
     if (!a) return;
+    a.pause();
     a.currentTime = 0; // restart if clicked repeatedly
     a.play().catch(() => {
       // ignore play failures
@@ -26,7 +27,7 @@ function Footer(){
       >
         <span role="img" aria-hidden="true">©</span>
         <span className="font-medium">A Word</span>
-        <span className="sr-only">plays a short sound bite</span>
+        <span className="sr-only">plays a short sound as an easter egg</span>
       </button>
 
       <audio

@@ -3,6 +3,9 @@ import { usePageTitle } from '../../../shared/hooks/usePageTitle';
 import { Card, CardHeader, CardTitle, CardContent} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils"
+import ErrorNotice from "@/features/ErrorNotice";
+import MissingItemNotice from "@/features/MissingItemNotice";
+
 
 import QuoteCard from '../components/QuoteCard';
 
@@ -34,8 +37,8 @@ function RandomQuotePage(){
   usePageTitle('Home');
 
   if (isPending) return <RandomQuotePageSkeleton />;
-  if (isError)   return <p role="alert">Error: {error.message} </p>;
-  if (!quote)  return <p>No quote found.</p>;
+  if (isError) return <ErrorNotice title="Couldn't load quote" error={error} />
+  if (!quote) return <MissingItemNotice resourceName="quote"/>
 
   return(
     <QuoteCard 

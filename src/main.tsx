@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import QueryProvider from './providers/QueryProvider.tsx'
-
+import { AppWithBoundaries, AppRouteFallback } from './features/AppWithBoundaries.tsx'
 
 import RootLayout from './RootLayout.tsx'
 import UserSignUpForm from './features/users/components/UserSignUpForm.tsx'
@@ -22,7 +22,8 @@ import RequireAuth from "./features/auth/RequireAuth.tsx";
 
 const router = createBrowserRouter([
   { path: "/", 
-    element: <RootLayout />,
+    element: <AppWithBoundaries><RootLayout /></AppWithBoundaries>,
+    errorElement: <AppRouteFallback />, 
     children: [ //everything nested under the "/" path goes here, so all pages 
 
       // routes requiring auth
@@ -64,7 +65,7 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryProvider>
-      <RouterProvider router={router}/>
+        <RouterProvider router={router}/>
     </QueryProvider>
   </StrictMode>,
 )

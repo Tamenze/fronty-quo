@@ -1,5 +1,5 @@
 import { api } from "./client"
-import type { User } from "../types/index"
+import type { User, UserShowApiResponse } from "../types/index"
 
 export type RequestOptions = {
   signal?: AbortSignal | null 
@@ -48,14 +48,12 @@ export function logIn(
   })
 }
 
-// logout/delete session 
 export function logOut(){
   return api('/api/v1/auth/logout', {
     method: 'DELETE',
   })
 }
 
-// create user 
 export function createNewUser(
   params: CreateNewUserParams
 ){
@@ -65,7 +63,6 @@ export function createNewUser(
   })
 }
 
-// update user 
 export function updateUser(
   id: number,
   params: UpdateUserParams
@@ -76,7 +73,6 @@ export function updateUser(
   })
 }
 
-// delete user 
 export function deleteSpecificUser(
   params: DeleteSpecificUserParams
 ){
@@ -85,12 +81,22 @@ export function deleteSpecificUser(
   })
 }
 
-//get specific user 
-export function getSpecificUser(
+export function getSpecificUser({
+  params, 
+  reqOpts, 
+  page = 1, 
+  perPage = 10
+}:{
   params: GetSpecificUserParams,
-  reqOpts?: RequestOptions
-){
-  return api<User>(`/api/v1/users/${params.id}`, {
+  reqOpts?: RequestOptions,
+  page?: number; 
+  perPage?: number; 
+}){
+  const qs = new URLSearchParams();
+  qs.set("page", String(page));
+  qs.set("per_page", String(perPage));
+
+  return api<UserShowApiResponse>(`/api/v1/users/${params.id}?${qs.toString()}`, {
     method: 'GET',
     signal: reqOpts?.signal
   })

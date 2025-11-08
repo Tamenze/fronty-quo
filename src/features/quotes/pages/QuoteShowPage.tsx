@@ -5,6 +5,8 @@ import { useFetchCurrentUser } from "../../users/hooks/useFetchCurrentUser";
 import { usePageTitle } from "../../../shared/hooks/usePageTitle";
 import { Card, CardHeader, CardTitle, CardContent} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import ErrorNotice from "@/features/ErrorNotice";
+import MissingItemNotice from "@/features/MissingItemNotice";
 import { cn } from "@/lib/utils"
 
 
@@ -39,8 +41,8 @@ function QuoteShowPage(){
   const {data: currentUser} = useFetchCurrentUser();
 
     if (isPending) return <QuoteShowPageSkeleton/>;
-    if (isError)   return <p role="alert">Error: {error?.message}</p>;
-    if (!quote)  return <p>No quote found.</p>;
+    if (isError) return <ErrorNotice title="Couldn't load quote" error={error} />
+    if (!quote) return <MissingItemNotice resourceName="quote"/>
   
   return (
     <>

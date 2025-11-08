@@ -49,3 +49,45 @@ export interface User {
     name: string;
   }[]
 }
+
+export interface Pagination {
+  url_template: string;
+  first_url: string;
+  previous_url: string | null;
+  page_url: string;
+  next_url: string | null;
+  last_url: string;
+  count: number;
+  page: number;
+  limit: number;
+  last: number;
+  in: number;
+  from: number;
+  to: number;
+  previous: number | null;
+  next: number | null;
+  options: {
+    limit: number;
+    limit_key: string;
+    page_key: string;
+    page: number;
+    client_max_limit: number;
+    count: number;
+  };
+};
+
+
+export type QuotesIndexApiResponse = { 
+  quotes: Quote[]; 
+  pagination: Pagination 
+};
+
+export type UserShowApiResponse = {
+  user: User;
+  pagination: Pagination 
+}
+
+export type TagShowApiResponse = {
+  tag: Tag;
+  pagination: Pagination;
+}

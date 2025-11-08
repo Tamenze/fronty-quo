@@ -7,7 +7,13 @@ import { QuoteCardSkeleton } from "@/features/quotes/components/QuoteCard";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import ErrorNotice from "@/features/ErrorNotice";
+import MissingItemNotice from "@/features/MissingItemNotice";
+import {useRef, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import PaginationBar from "@/features/PaginationBar";
+
+
 
 export const TagShowPageSkeleton = () => {
    return (
@@ -38,67 +44,48 @@ export const TagShowPageSkeleton = () => {
       </Card>
     </div>
   );
-      // <div className="p-4 sm:p-6" aria-hidden>
-      //    <Card className="p-6 space-y-6">
-
-      //    {/* Tag Card  */}
-      //    <div className="flex items-center justify-between">
-      //       <Skeleton className="h-7 w-48" />
-      //       <Skeleton className="h-5 w-24" />
-      //    </div>
-
-      //    <Separator />
-
-      //    {/* Quotes Header  */}
-      //    <div className="space-y-3">
-      //       <Skeleton className="h-4 w-64" />
-      //       <Skeleton className="h-4 w-48" />
-      //       <Skeleton className="h-4 w-56" />
-      //    </div>
-
-      //    <Separator />
-
-      //    <Skeleton className="h-5 w-36" />
-      //    <div className="space-y-3">
-      //       <Skeleton className="h-20 w-full" />
-      //       <Skeleton className="h-20 w-full" />
-      //       <Skeleton className="h-20 w-full" />
-      //    </div>
-      //    </Card>
-      // </div>
-   // )
 };
 
 
 function TagShowPage(){
+   usePageTitle('Show Tag');
    const { id } = useParams<{id: string}>();
-   usePageTitle('Show Tag')
+   const [sp, setSp] = useSearchParams();
+   const page = Number(sp.get("page") || 1);
+   const perPage = Number(sp.get("per_page") || 10);
 
-   const { data: tag, isPending, isError, error } = useGetTag(Number(id));
+     
+  const listRef = useRef<HTMLDivElement>(null);
+  const prevPageRef = useRef<number | null>(null);
+
+   const { 
+      data: { tag, pagination } = {}, 
+      isPending, 
+      isError, 
+      error 
+   } = useGetTag(Number(id), page, perPage)
+   const lastPage = pagination?.last ?? 1;
+
+   const onPageChange = (newPage: number) => {
+    setSp({ page: String(newPage), per_page: String(perPage) }, { replace: false });
+   };
+     
+   useEffect(() => {
+    const isFirstRender = prevPageRef.current === null;
+    const pageChanged = prevPageRef.current !== page;
+
+    if (!isPending && pageChanged && !isFirstRender) {
+      listRef.current?.scrollIntoView({ behavior: "instant", block: "start" });
+    }
+    prevPageRef.current = page;
+  }, [page, isPending]);
+
+
 
     if (isPending) return <TagShowPageSkeleton />;
-    
-    if (isError){
-      return (
-         <div className="p-4 sm:p-6">
-            <Alert variant="destructive">
-               <AlertTitle>Couldn't load tag</AlertTitle>
-               <AlertDescription>{error?.message ?? "Something went wrong."}</AlertDescription>
-            </Alert>
-         </div>
-      )
-    };
+    if (isError) return <ErrorNotice title="Couldn't load tag" error={error} />
+    if (!tag) return <MissingItemNotice resourceName="tag"/>
 
-    if (!tag){
-      return (
-         <div className="p-4 sm:p-6">
-            <Alert>
-               <AlertTitle>No tag found</AlertTitle>
-               <AlertDescription>The tag you're looking for doesn't exist.</AlertDescription>
-            </Alert>
-         </div>
-      )
-    };
   
    return (
       <div className="p-4 sm:p-6">
@@ -108,7 +95,7 @@ function TagShowPage(){
 
             {/* Quotes */}
             <Separator />
-            <CardHeader className="px-0 pt-0">
+            <CardHeader className="px-0 pt-0" ref={listRef}>
                {/* future: return and display count */}
                <CardTitle className="text-lg">
                   Quotes with this tag
@@ -119,6 +106,13 @@ function TagShowPage(){
             </CardHeader>
             <CardContent className="px-0">
                <QuotesList quotes={tag.quotes} />
+               {(pagination && pagination.count > pagination.limit) && (
+                  <PaginationBar 
+                     page={page}
+                     lastPage={lastPage}
+                     onPageChange={onPageChange}
+                  />
+               )}
             </CardContent>
          </Card>
       </div>

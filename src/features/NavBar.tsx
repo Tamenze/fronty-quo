@@ -45,18 +45,18 @@ function NavBar({ currentUser, isLoadingAuth }: NavBarProps){
   if (isLoadingAuth) return <NavBarSkeleton />
 
   return (
-        <NavigationMenu className='m-auto justify-between p-10 pt-0 **:text-lg'>
+        <NavigationMenu className='m-auto justify-between p-10 pt-0 **:text-sm **:md:text-lg'>
           <NavigationMenuList>
           {loggedIn ? (
             <>
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
-                  <Link to={'/quotes/new'}>Add a new Quote</Link>
+                  <Link to={'/quotes/new'}>New Quote</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
-                  <Link to={'/tags/new'}>Add a new Tag</Link>
+                  <Link to={'/tags/new'}>New Tag</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>

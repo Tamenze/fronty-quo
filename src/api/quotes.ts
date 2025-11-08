@@ -1,5 +1,5 @@
 import { api } from "./client"
-import type { Quote } from "../types"
+import type { Quote, QuotesIndexApiResponse } from "../types"
 
 export type RequestOptions = {
   signal?: AbortSignal | null 
@@ -20,8 +20,20 @@ export type UpdateQuoteParams = {
   tag_ids?: number[];
 }
 
-export function getQuotes(reqOpts?: RequestOptions){
-  return api<Quote[]>('/api/v1/quotes', {
+export function getQuotes({
+  reqOpts,
+  page = 1,
+  perPage = 10,
+}: { 
+  reqOpts?: RequestOptions; 
+  page?: number; 
+  perPage?: number; 
+}){
+  const qs = new URLSearchParams();
+  qs.set("page", String(page));
+  qs.set("per_page", String(perPage));
+
+  return api<QuotesIndexApiResponse>(`/api/v1/quotes?${qs.toString()}`, {
     method: 'GET',
     signal: reqOpts?.signal
   })
@@ -71,15 +83,6 @@ export function deleteQuote(id: number){
 
 
 //todo
-
-// delete quote 
-
 // delete all quotes 
 
-//done 
 
-// get specific quote 
-
-// add new quote 
-
-// update quote 

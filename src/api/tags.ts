@@ -1,5 +1,5 @@
 import type { RequestOptions } from "./quotes"
-import type { Tag } from "../types"
+import type { Tag, TagShowApiResponse } from "../types"
 import { api } from "./client"
 
 type GetSpecificTagParams = {
@@ -10,12 +10,22 @@ export type CreateNewTagParams = {
   name: string;
 }
 
-//get tag 
-export function getSpecificTag(
-  params: GetSpecificTagParams,
-  reqOpts?: RequestOptions
-){
-  return api<Tag>(`/api/v1/tags/${params.id}`, {
+export function getSpecificTag({
+  params, 
+  reqOpts, 
+  page = 1, 
+  perPage = 10
+}: {
+    params: GetSpecificTagParams,
+    reqOpts?: RequestOptions,
+    page?: number; 
+    perPage?: number; 
+}){
+  const qs = new URLSearchParams();
+  qs.set("page", String(page));
+  qs.set("per_page", String(perPage));
+
+  return api<TagShowApiResponse>(`/api/v1/tags/${params.id}?${qs.toString()}`, {
     method: 'GET',
     signal: reqOpts?.signal
   })
@@ -30,7 +40,6 @@ export function getAllTags(
   })
 }
 
-// create new tag 
 export function createNewTag(
   params: CreateNewTagParams
 ){
@@ -40,5 +49,6 @@ export function createNewTag(
   })
 }
 
+//todo
 // delete tag 
 

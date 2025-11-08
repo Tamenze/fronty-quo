@@ -18,8 +18,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-
 import PasswordRules from "./PasswordRules";
+import ErrorNotice from "@/features/ErrorNotice";
+import MissingItemNotice from "@/features/MissingItemNotice";
 
 export const UserUpdateFormSkeleton = () => (
     <div className="p-4 sm:p-6" aria-hidden>
@@ -95,7 +96,7 @@ export const UserUpdateFormSkeleton = () => (
 
 function UserUpdateForm(){
   const { id } = useParams<{id: string}>();
-  const { data: currentUser, isPending: isLoadingCurrentUser } = useFetchCurrentUser();
+  const { data: currentUser, isPending: isLoadingCurrentUser, isError, error } = useFetchCurrentUser();
 
   const [mutationError, setMutationError] = useState('');
   const { reset, register, handleSubmit, formState: { errors }} = useForm<UpdateUserInput>({
@@ -129,8 +130,10 @@ function UserUpdateForm(){
   
   
   
-  if (isLoadingCurrentUser) return <p>Loading…</p>;
-  if (!isLoadingCurrentUser && !currentUser)  return <p> No user found.</p>;
+  if (isLoadingCurrentUser) return <UserUpdateFormSkeleton/>;
+  if (isError) return <ErrorNotice title="Couldn't load user update form" error={error} />
+  if (!currentUser) return <MissingItemNotice resourceName="user"/>
+
 
   return (
     <div className="p-4 sm:p-6">

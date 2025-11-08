@@ -26,11 +26,16 @@ function UserLoginForm(){
     const navigate = useNavigate();
     usePageTitle('Log In')
 
-    const onSubmit = (formData: LoginUserInput) => 
-      mutate(formData, {
+    const onSubmit = (formData: LoginUserInput) => {
+      console.log({formData});
+      return mutate(formData, {
         onSuccess: () => navigate('/'),
-        onError: (err) => setMutationError(err.message)
+        onError: (err) => {
+          console.log(err);
+          setMutationError(err.message)
+        }
       })
+    }
 
     return (
       <div className="p-4 sm:p-6">

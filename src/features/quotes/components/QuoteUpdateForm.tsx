@@ -22,6 +22,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import type { Tag } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import ErrorNotice from "@/features/ErrorNotice";
+import MissingItemNotice from "@/features/MissingItemNotice";
 
 
 export const QuoteUpdateFormSkeleton = () => (
@@ -111,10 +113,10 @@ function QuoteUpdateForm(){
     }
   }, [quote, reset]);
 
-
     if (isLoadingQuote) return <QuoteUpdateFormSkeleton/>;
-    if (isQuoteError)   return <p role="alert">Error: {quoteError?.message}</p>;
-    if (!quote)  return <p>No quote found.</p>;
+    if (isQuoteError) return <ErrorNotice title="Couldn't load quote" error={quoteError} />
+    if (!quote) return <MissingItemNotice resourceName="quote"/>
+
   
 
     const tagOptions = allTags?.map((t) => ({ value: t.id, label: t.name})) ?? [];

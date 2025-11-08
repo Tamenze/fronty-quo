@@ -15,7 +15,7 @@ export const useUpdateQuote = () => {
   return useMutation<Quote, Error, UpdateQuoteVariables>({
     mutationFn: ({id, ...payload}) => updateQuote(id, payload),
     onSuccess: (quote) => {
-      qc.invalidateQueries({ queryKey: ['quotes'] });
+      qc.invalidateQueries({ queryKey: ['quote'] });
       qc.setQueryData(['quote', quote.id], quote);
     }
   })

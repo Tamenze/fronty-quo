@@ -37,15 +37,14 @@ export const QuoteCardSkeleton = ({className} : {className?: string}) => (
           </div>
         </CardTitle>
 
-        {/* CardDescription (quoted by • created …) only when !isHero in real component.
-            We include a line to keep spacing consistent across list items. */}
+        {/* CardDescription (quoted by • created ...) only when !isHero in real component. */}
         <CardDescription className="mt-2">
           <Skeleton className="h-4 w-64" />
         </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-3">
-        {/* Conditional separator if tags or canEdit exist; show it to reserve space */}
+        {/* Conditional separator if tags or canEdit exist; shown to reserve space */}
         <Skeleton className="h-px w-full" />
         {/* Tags row */}
         <div className="flex flex-wrap gap-2">
@@ -164,7 +163,7 @@ export function QuoteCard({ quote, canEdit, className, isWithinList, isHero, cen
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive" disabled={isDeletingQuote}>
-                  {isDeletingQuote ? "Deleting…" : "Delete"}
+                  {isDeletingQuote ? "Deleting..." : "Delete"}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -180,7 +179,7 @@ export function QuoteCard({ quote, canEdit, className, isWithinList, isHero, cen
                     onClick={handleDelete}
                     disabled={isDeletingQuote}
                   >
-                    {isDeletingQuote ? "Deleting…" : "Delete"}
+                    {isDeletingQuote ? "Deleting..." : "Delete"}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

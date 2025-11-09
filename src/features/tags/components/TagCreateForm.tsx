@@ -102,7 +102,7 @@ function TagCreateForm(){
                 Cancel
               </Button>
               <Button type="submit" disabled={isCreatingTag}>
-                {isCreatingTag ? "Creating…" : "Create Tag"}
+                {isCreatingTag ? "Creating..." : "Create Tag"}
               </Button>
             </div>
           </CardFooter>

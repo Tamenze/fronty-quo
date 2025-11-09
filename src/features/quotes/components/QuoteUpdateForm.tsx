@@ -208,7 +208,7 @@ function QuoteUpdateForm(){
                   control={control}
                   render={({ field: { onChange, value } }) => {
                     if (isLoadingTags) {
-                      return <AsyncSelect isMulti isDisabled isLoading placeholder="Loading tags…" />;
+                      return <AsyncSelect isMulti isDisabled isLoading placeholder="Loading tags..." />;
                     }
 
                     return (

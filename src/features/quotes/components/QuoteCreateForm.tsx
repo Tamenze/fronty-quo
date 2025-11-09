@@ -121,7 +121,7 @@ function QuoteCreateForm(){
                 Cancel
               </Button>
               <Button type="submit" disabled={isPending}>
-                {isPending ? "Creating…" : "Create Quote"}
+                {isPending ? "Creating..." : "Create Quote"}
               </Button>
             </div>
           </CardFooter>

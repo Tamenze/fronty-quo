@@ -27,7 +27,7 @@ function RootLayout() {
             aria-hidden="true" 
             focusable="false" 
             viewBox="350 58 500 460" 
-            className="h-[150px] w-auto justify-self-center" 
+            className="h-[150px] w-auto mx-auto" 
           />
         </Link>
         <NavBar currentUser={currentUser} isLoadingAuth={isLoading} />

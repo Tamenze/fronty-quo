@@ -10,6 +10,8 @@ const API = import.meta.env.VITE_API_URL as string;
 let csrfToken = '';
 let inflightCsrf: Promise<string> | null = null;
 
+export function setCsrfToken(t: string) { csrfToken = t; }
+
 
 const isJson = (res: Response) =>
   (res.headers.get("content-type") || "").toLowerCase().includes("application/json");
@@ -112,9 +114,6 @@ export async function api<T = Json>(path: string, init: ApiInit = {}): Promise<T
 
       body = await parseErrorBody(res);
     }
-
-    console.log({res})
-    console.log(body.fields);
     // Build structured error (don't include raw HTML in message)
     const status = res.status;
     const title = body?.title;

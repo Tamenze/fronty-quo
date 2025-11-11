@@ -20,13 +20,11 @@ type NavBarProps = {
 
 const NavBarSkeleton = () => {
   return (
-    <NavigationMenu className='m-auto justify-between p-10 pt-0'>
-        <NavigationMenuList>
-          <div className="flex items-center gap-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-6 rounded w-24" />
-            ))}
-          </div>
+    <NavigationMenu className='m-auto justify-between pb-10 pt-0'>
+        <NavigationMenuList className='gap-2'>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-6 rounded w-16 sm:w-24" />
+          ))}
         </NavigationMenuList>
     </NavigationMenu>
   )
@@ -45,7 +43,7 @@ function NavBar({ currentUser, isLoadingAuth }: NavBarProps){
   if (isLoadingAuth) return <NavBarSkeleton />
 
   return (
-        <NavigationMenu className='m-auto justify-between p-10 pt-0 **:text-sm **:md:text-lg'>
+        <NavigationMenu className='m-auto justify-between pb-10 pt-0 **:text-sm **:md:text-lg'>
           <NavigationMenuList>
           {loggedIn ? (
             <>

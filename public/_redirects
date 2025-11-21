@@ -1,0 +1,2 @@
+# Redirect all paths without corresponding static asset to render index.html 
+/*    /index.html   200

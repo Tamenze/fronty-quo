@@ -5,59 +5,136 @@ import './index.css'
 import QueryProvider from './providers/QueryProvider.tsx'
 import { AppWithBoundaries, AppRouteFallback } from './features/AppWithBoundaries.tsx'
 
-import RootLayout from './RootLayout.tsx'
-import UserSignUpForm from './features/users/components/UserSignUpForm.tsx'
-import RandomQuotePage from './features/quotes/pages/RandomQuotePage.tsx'
-import UserLoginForm from './features/users/components/UserLoginForm.tsx'
-import QuotesIndexPage, { QuotesIndexPageSkeleton } from './features/quotes/pages/QuotesIndexPage.tsx'
-import QuoteShowPage, { QuoteShowPageSkeleton } from './features/quotes/pages/QuoteShowPage.tsx'
-import TagShowPage, { TagShowPageSkeleton } from './features/tags/pages/TagShowPage.tsx'
-import QuoteCreateForm, { QuoteCreateFormSkeleton } from './features/quotes/components/QuoteCreateForm.tsx'
-import QuoteUpdateForm, { QuoteUpdateFormSkeleton } from './features/quotes/components/QuoteUpdateForm.tsx'
-import UserProfilePage, { UserProfilePageSkeleton } from './features/users/pages/UserProfilePage.tsx'
-import UserUpdateForm, { UserUpdateFormSkeleton } from './features/users/components/UserUpdateForm.tsx'
-import TagCreateForm, { TagCreateFormSkeleton } from './features/tags/components/TagCreateForm.tsx'
-
+//imports in the main bundle, eagerly loaded to show layout + homepage immediately.
+import RootLayout from './RootLayout.tsx';
+import RandomQuotePage from './features/quotes/pages/RandomQuotePage.tsx';
 import RequireAuth from "./features/auth/RequireAuth.tsx";
 
+//route-level code-splitting: "heavy" pages are lazy-loaded per route
 const router = createBrowserRouter([
   { path: "/", 
     element: <AppWithBoundaries><RootLayout /></AppWithBoundaries>,
     errorElement: <AppRouteFallback />, 
     children: [ //everything nested under the "/" path goes here, so all pages 
 
-      // routes requiring auth
+      // Protected routes requiring auth: skeleton shown while auth + page module load in parallel.
       { path: 'quotes', 
-        element: <RequireAuth fallback={<QuotesIndexPageSkeleton/>}><QuotesIndexPage/></RequireAuth>
+        lazy: async() => {
+          const mod = await import('./features/quotes/pages/QuotesIndexPage.tsx');
+          const QuotesIndexPage = mod.default;
+          const QuotesIndexPageSkeleton = mod.QuotesIndexPageSkeleton;
+
+          return {
+            element: <RequireAuth fallback={<QuotesIndexPageSkeleton />}><QuotesIndexPage /></RequireAuth>
+          };
+        }
       },
       { path: "quotes/:id", 
-        element: <RequireAuth fallback={<QuoteShowPageSkeleton/>}><QuoteShowPage/></RequireAuth>
+        lazy: async() => {
+          const mod = await import('./features/quotes/pages/QuoteShowPage.tsx');
+          const QuoteShowPage = mod.default;
+          const QuoteShowPageSkeleton = mod.QuoteShowPageSkeleton;
+
+          return {
+            element: <RequireAuth fallback={<QuoteShowPageSkeleton/>}><QuoteShowPage/></RequireAuth>
+          }
+        }
       },
-      { path: "tags/:id", 
-        element: <RequireAuth fallback={<TagShowPageSkeleton/>}><TagShowPage/></RequireAuth>
+      {
+        path: "tags/:id",
+        lazy: async () => {
+          const mod = await import("./features/tags/pages/TagShowPage.tsx");
+          const TagShowPage = mod.default;
+          const TagShowPageSkeleton = mod.TagShowPageSkeleton;
+
+          return {
+            element: <RequireAuth fallback={<TagShowPageSkeleton />}><TagShowPage /></RequireAuth>,
+          };
+        },
       },
-      { path: "tags/new", 
-        element: <RequireAuth fallback={<TagCreateFormSkeleton/>}><TagCreateForm/></RequireAuth>
+      {
+        path: "tags/new",
+        lazy: async () => {
+          const mod = await import("./features/tags/components/TagCreateForm.tsx");
+          const TagCreateForm = mod.default;
+          const TagCreateFormSkeleton = mod.TagCreateFormSkeleton;
+
+          return {
+            element: <RequireAuth fallback={<TagCreateFormSkeleton />}><TagCreateForm /></RequireAuth>,
+          };
+        },
       },
-      { path: "quotes/new", 
-        element: <RequireAuth fallback={<QuoteCreateFormSkeleton/>}><QuoteCreateForm/></RequireAuth>
+      {
+        path: "quotes/new",
+        lazy: async () => {
+          const mod = await import("./features/quotes/components/QuoteCreateForm.tsx");
+          const QuoteCreateForm = mod.default;
+          const QuoteCreateFormSkeleton = mod.QuoteCreateFormSkeleton;
+
+          return {
+            element: <RequireAuth fallback={<QuoteCreateFormSkeleton />}><QuoteCreateForm /></RequireAuth>,
+          };
+        },
       },
-      { path: "quotes/:id/edit", 
-        element: <RequireAuth fallback={<QuoteUpdateFormSkeleton/>}><QuoteUpdateForm /></RequireAuth>
+      {
+        path: "quotes/:id/edit",
+        lazy: async () => {
+          const mod = await import("./features/quotes/components/QuoteUpdateForm.tsx");
+          const QuoteUpdateForm = mod.default;
+          const QuoteUpdateFormSkeleton = mod.QuoteUpdateFormSkeleton;
+
+          return {
+            element: <RequireAuth fallback={<QuoteUpdateFormSkeleton />}><QuoteUpdateForm /></RequireAuth>,
+          };
+        },
       },
-      { path: "users/:id", 
-        element: <RequireAuth fallback={<UserProfilePageSkeleton/>}><UserProfilePage /></RequireAuth>
+      {
+        path: "users/:id",
+        lazy: async () => {
+          const mod = await import("./features/users/pages/UserProfilePage.tsx");
+          const UserProfilePage = mod.default;
+          const UserProfilePageSkeleton = mod.UserProfilePageSkeleton;
+
+          return {
+            element: <RequireAuth fallback={<UserProfilePageSkeleton />}><UserProfilePage /></RequireAuth>,
+          };
+        },
       },
-      { path: 'users/:id/edit', 
-        element: <RequireAuth fallback={<UserUpdateFormSkeleton/>}><UserUpdateForm/></RequireAuth>
+      {
+        path: "users/:id/edit",
+        lazy: async () => {
+          const mod = await import("./features/users/components/UserUpdateForm.tsx");
+          const UserUpdateForm = mod.default;
+          const UserUpdateFormSkeleton = mod.UserUpdateFormSkeleton;
+
+          return {
+            element: <RequireAuth fallback={<UserUpdateFormSkeleton />}><UserUpdateForm /></RequireAuth>,
+          };
+        },
       },
 
       // routes open to public (non-authed users)
       { index: true, element: <RandomQuotePage /> },
-      { path: "signup", element: <UserSignUpForm /> },
-      { path: "login", element: <UserLoginForm />},
+      { path: "signup",
+        lazy: async() => {
+          const mod = await import("./features/users/components/UserSignUpForm.tsx");
+          const UserSignUpForm = mod.default;
 
+          return {
+            element: <UserSignUpForm />
+          }
+        } 
+      },
+      { path: "login",
+        lazy: async() => {
+          const mod = await import("./features/users/components/UserLoginForm.tsx");
+          const UserLoginForm = mod.default;
 
+          return {
+            element: <UserLoginForm />
+          }
+        }
+      } 
     ]
   }
 ])
@@ -65,7 +142,7 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryProvider>
-        <RouterProvider router={router}/>
+      <RouterProvider router={router}/>
     </QueryProvider>
   </StrictMode>,
 )

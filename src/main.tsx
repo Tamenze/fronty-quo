@@ -11,6 +11,7 @@ import { AppWithBoundaries, AppRouteFallback } from './features/AppWithBoundarie
 import RootLayout from './RootLayout.tsx';
 import RandomQuotePage from './features/quotes/pages/RandomQuotePage.tsx';
 import RequireAuth from "./features/auth/RequireAuth.tsx";
+import { ThemeProvider } from "./providers/ThemeProvider.tsx";
 
 //route-level code-splitting: "heavy" pages are lazy-loaded per route
 const router = createBrowserRouter([
@@ -152,8 +153,10 @@ createRoot(document.getElementById('root')!, {
   onRecoverableError: Sentry.reactErrorHandler(),
 }).render(
   <StrictMode>
-    <QueryProvider>
-      <RouterProvider router={router}/>
-    </QueryProvider>
+    <ThemeProvider>
+      <QueryProvider>
+        <RouterProvider router={router}/>
+      </QueryProvider>
+    </ThemeProvider>
   </StrictMode>,
 )

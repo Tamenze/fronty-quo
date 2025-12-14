@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Bye from '@/assets/bye.svg?react';
 import { Skeleton } from "@/components/ui/skeleton";
+import { ThemeToggle } from './ThemeToggle';
 
 
 type NavBarProps = {
@@ -22,7 +23,7 @@ const NavBarSkeleton = () => {
   return (
     <NavigationMenu className='m-auto justify-between pb-10 pt-0'>
         <NavigationMenuList className='gap-2'>
-          {Array.from({ length: 4 }).map((_, i) => (
+          {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="h-6 rounded w-16 sm:w-24" />
           ))}
         </NavigationMenuList>
@@ -33,13 +34,12 @@ const NavBarSkeleton = () => {
 function NavBar({ currentUser, isLoadingAuth }: NavBarProps){
   const location = useLocation();
 
-
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
   const isOn = (path: string) => location.pathname === path;
 
   const showHomeLink = isOn('/signup') || isOn('/login');
   const loggedIn = !!currentUser;
-
+  
   if (isLoadingAuth) return <NavBarSkeleton />
 
   return (
@@ -102,6 +102,7 @@ function NavBar({ currentUser, isLoadingAuth }: NavBarProps){
             )}
           </>
           )}
+          <ThemeToggle />
           </NavigationMenuList>
         </NavigationMenu>
   )
